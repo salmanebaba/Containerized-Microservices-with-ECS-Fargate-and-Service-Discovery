@@ -13,8 +13,8 @@ phases:
 
       - echo Setting image tags...
       - AUTH_IMAGE=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/containerized-microservices-auth
-      - ORDERS_IMAGE=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/containerized-microservices-order
-      - NOTIFICATIONS_IMAGE=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/containerized-microservices-notification
+      - ORDER_IMAGE=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/containerized-microservices-order
+      - NOTIFICATION_IMAGE=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/containerized-microservices-notification
 
 
   build:
