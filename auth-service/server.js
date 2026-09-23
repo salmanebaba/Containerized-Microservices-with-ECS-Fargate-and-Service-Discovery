@@ -1,5 +1,6 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
+const { connectRedis } = require('./redis');
 
 const app = express();
 const port = process.env.PORT || 4001;
@@ -62,6 +63,15 @@ app.get('/validate', (req, res) => {
   }
 });
 
-app.listen(port, '0.0.0.0', () => {
-  console.log(`Service running on port ${port}`);
+async function start() {
+  await connectRedis();
+
+  app.listen(port, '0.0.0.0', () => {
+    console.log(`Auth service running on port ${port}`);
+  });
+}
+
+start().catch((error) => {
+  console.error('Failed to start Auth service:', error);
+  process.exit(1);
 });
