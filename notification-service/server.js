@@ -6,15 +6,15 @@ const notifications = [];
 
 app.use(express.json());
 
-app.get('/health', (req, res) => {
+app.get('/api/notification/health', (req, res) => {
   res.json({ status: 'ok', service: 'notification-service' });
 });
 
-app.get('/notifications', (req, res) => {
+app.get('/api/notification/notifications', (req, res) => {
   res.json({ notifications });
 });
 
-app.post('/notify', (req, res) => {
+app.post('/api/notification/notify', (req, res) => {
   const payload = req.body || {};
   const notification = {
     id: `NOT-${Date.now()}`,

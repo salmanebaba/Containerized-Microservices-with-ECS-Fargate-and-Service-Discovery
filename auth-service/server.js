@@ -13,11 +13,11 @@ const users = [
 
 app.use(express.json());
 
-app.get('/health', (req, res) => {
+app.get('/api/auth/health', (req, res) => {
   res.json({ status: 'ok', service: 'auth-service' });
 });
 
-app.post('/login', (req, res) => {
+app.post('/api/auth/login', (req, res) => {
   const { username, password } = req.body || {};
 
   if (!username || !password) {
@@ -45,7 +45,7 @@ app.post('/login', (req, res) => {
   });
 });
 
-app.get('/validate', (req, res) => {
+app.get('/api/auth/validate', (req, res) => {
   const authHeader = req.headers.authorization || '';
   const token = authHeader.startsWith('Bearer ')
     ? authHeader.substring(7)

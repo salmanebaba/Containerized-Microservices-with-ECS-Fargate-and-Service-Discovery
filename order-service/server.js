@@ -10,15 +10,15 @@ app.use(express.json());
 
 const orders = [];
 
-app.get('/health', (req, res) => {
+app.get('/api/order/health', (req, res) => {
   res.json({ status: 'ok', service: 'order-service' });
 });
 
-app.get('/orders', (req, res) => {
+app.get('/api/order/orders', (req, res) => {
   res.json({ orders });
 });
 
-app.post('/orders', async (req, res) => {
+app.post('/api/order/orders', async (req, res) => {
   const { item, total, userToken } = req.body || {};
   const token = userToken || req.headers.authorization || '';
 
@@ -27,7 +27,7 @@ app.post('/orders', async (req, res) => {
   }
 
   try {
-    const validationResponse = await axios.get(`${authServiceUrl}/validate`, {
+    const validationResponse = await axios.get(`${authServiceUrl}/api/auth/validate`, {
       headers: {
         Authorization: token.startsWith('Bearer ') ? token : `Bearer ${token}`
       },
@@ -47,7 +47,7 @@ app.post('/orders', async (req, res) => {
     orders.push(order);
 
     const notificationResponse = await axios.post(
-      `${notificationServiceUrl}/notify`,
+      `${notificationServiceUrl}/api/notification/notify`,
       {
         type: 'order_created',
         message: `Order ${order.id} created for ${order.username}`,
