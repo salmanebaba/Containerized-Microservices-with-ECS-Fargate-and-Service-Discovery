@@ -36,7 +36,7 @@ phases:
       - echo Pushing images to ECR...
 
       - docker push $AUTH_IMAGE:$CODEBUILD_BUILD_NUMBER
-      - docker push $ORDERS_IMAGE:$CODEBUILD_BUILD_NUMBER
+      - docker push $ORDER_IMAGE:$CODEBUILD_BUILD_NUMBER
       - docker push $NOTIFICATION_IMAGE:$CODEBUILD_BUILD_NUMBER
 
 
