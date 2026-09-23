@@ -34,6 +34,6 @@ app.post('/notify', (req, res) => {
   });
 });
 
-app.listen(port, () => {
-  console.log(`Notification service running on port ${port}`);
+app.listen(port, '0.0.0.0', () => {
+  console.log(`Service running on port ${port}`);
 });

@@ -1,33 +1,34 @@
-version: "3.9"
-
 services:
+
   auth-service:
-    build: ./auth-service
+    build:
+      context: ./auth-service
     container_name: auth-service
-    ports:
-      - "4001:4001"
     environment:
       PORT: 4001
       JWT_SECRET: dev_jwt_secret
+    ports:
+      - "4001:4001"
 
   order-service:
-    build: ./order-service
+    build:
+      context: ./order-service
     container_name: order-service
-    depends_on:
-      - auth-service
-      - notification-service
-    ports:
-      - "4002:4002"
     environment:
       PORT: 4002
       AUTH_SERVICE_URL: http://auth-service:4001
       NOTIFICATION_SERVICE_URL: http://notification-service:4003
-      JWT_SECRET: dev_jwt_secret
+    ports:
+      - "4002:4002"
+    depends_on:
+      - auth-service
+      - notification-service
 
   notification-service:
-    build: ./notification-service
+    build:
+      context: ./notification-service
     container_name: notification-service
-    ports:
-      - "4003:4003"
     environment:
       PORT: 4003
+    ports:
+      - "4003:4003"
