@@ -1,0 +1,54 @@
+version: 0.2
+
+env:
+  variables:
+    AWS_REGION: eu-west-3
+
+phases:
+
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+
+      - echo Setting image tags...
+      - AUTH_IMAGE=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/containerized-microservices-auth
+      - ORDERS_IMAGE=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/containerized-microservices-order
+      - NOTIFICATIONS_IMAGE=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/containerized-microservices-notification
+
+
+  build:
+    commands:
+
+      - echo Building Auth image...
+      - docker build -t $AUTH_IMAGE:$CODEBUILD_BUILD_NUMBER ./auth-service
+
+      - echo Building Order image...
+      - docker build -t $ORDER_IMAGE:$CODEBUILD_BUILD_NUMBER ./order-service
+
+      - echo Building Notifications image...
+      - docker build -t $NOTIFICATION_IMAGE:$CODEBUILD_BUILD_NUMBER ./notification-service
+
+
+  post_build:
+    commands:
+
+      - echo Pushing images to ECR...
+
+      - docker push $AUTH_IMAGE:$CODEBUILD_BUILD_NUMBER
+      - docker push $ORDERS_IMAGE:$CODEBUILD_BUILD_NUMBER
+      - docker push $NOTIFICATION_IMAGE:$CODEBUILD_BUILD_NUMBER
+
+
+      - echo Creating ECS image definitions...
+
+      - printf '[{"name":"auth-service","imageUri":"%s"},{"name":"order-service","imageUri":"%s"},{"name":"notification-service","imageUri":"%s"}]' \
+        $AUTH_IMAGE:$CODEBUILD_BUILD_NUMBER \
+        $ORDER_IMAGE:$CODEBUILD_BUILD_NUMBER \
+        $NOTIFICATION_IMAGE:$CODEBUILD_BUILD_NUMBER \
+        > imagedefinitions.json
+
+
+artifacts:
+  files:
+    - imagedefinitions.json
