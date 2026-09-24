@@ -12,7 +12,7 @@ The services run on **Amazon ECS Fargate** inside private subnets and are expose
 
 ## Architecture
 
-![AWS Architecture](./architecture.png)
+![AWS Architecture](.images/architecture.png)
 
 ### Main flow
 
@@ -165,6 +165,8 @@ A lightweight static frontend can be used to test:
 - Raw HTTP responses
 
 The frontend can be served locally with Nginx.
+
+(.images/architecture.png)
 
 ### Run the frontend locally
 
