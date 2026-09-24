@@ -166,7 +166,7 @@ A lightweight static frontend can be used to test:
 
 The frontend can be served locally with Nginx.
 
-(images/architecture.png)
+![Frontend For Test](images/frontend_test.png)
 
 ### Run the frontend locally
 
