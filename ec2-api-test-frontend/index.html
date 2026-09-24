@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Microservices API Test Console</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">AWS ECS Fargate project</p>
+        <h1>Microservices API Test Console</h1>
+        <p class="subtitle">Test Auth, Orders and Notifications through your Application Load Balancer.</p>
+      </div>
+      <button id="runAllHealth" class="primary">Run all health checks</button>
+    </header>
+
+    <section class="panel config-panel">
+      <div class="panel-heading">
+        <div>
+          <h2>API configuration</h2>
+          <p>Leave API base empty when Nginx proxies <code>/api/*</code> to your ALB.</p>
+        </div>
+      </div>
+      <div class="config-grid">
+        <label>
+          API base URL
+          <input id="apiBase" type="text" placeholder="Same origin (recommended on EC2)" />
+        </label>
+        <label>
+          Auth prefix
+          <input id="authPrefix" type="text" value="/api/auth" />
+        </label>
+        <label>
+          Order prefix
+          <input id="orderPrefix" type="text" value="/api/order" />
+        </label>
+        <label>
+          Notification prefix
+          <input id="notificationPrefix" type="text" value="/api/notification" />
+        </label>
+      </div>
+    </section>
+
+    <section class="service-grid">
+      <article class="panel service-card">
+        <div class="service-title">
+          <div>
+            <span class="service-tag">4001</span>
+            <h2>Auth Service</h2>
+          </div>
+          <span id="authStatus" class="status idle">Not tested</span>
+        </div>
+        <p id="authHealthPath" class="endpoint">GET /api/auth/health</p>
+        <button data-health="auth" class="secondary">Test health</button>
+      </article>
+
+      <article class="panel service-card">
+        <div class="service-title">
+          <div>
+            <span class="service-tag">4002</span>
+            <h2>Order Service</h2>
+          </div>
+          <span id="orderStatus" class="status idle">Not tested</span>
+        </div>
+        <p id="orderHealthPath" class="endpoint">GET /api/order/health</p>
+        <button data-health="order" class="secondary">Test health</button>
+      </article>
+
+      <article class="panel service-card">
+        <div class="service-title">
+          <div>
+            <span class="service-tag">4003</span>
+            <h2>Notification Service</h2>
+          </div>
+          <span id="notificationStatus" class="status idle">Not tested</span>
+        </div>
+        <p id="notificationHealthPath" class="endpoint">GET /api/notification/health</p>
+        <button data-health="notification" class="secondary">Test health</button>
+      </article>
+    </section>
+
+    <section class="work-grid">
+      <article class="panel">
+        <div class="panel-heading">
+          <div>
+            <h2>Authentication</h2>
+            <p>Login, save the JWT, then validate it.</p>
+          </div>
+        </div>
+        <div class="form-grid two">
+          <label>
+            Username
+            <input id="username" type="text" value="alice" autocomplete="username" />
+          </label>
+          <label>
+            Password
+            <input id="password" type="password" value="password123" autocomplete="current-password" />
+          </label>
+        </div>
+        <div class="actions">
+          <button id="loginBtn" class="primary">POST /login</button>
+          <button id="validateBtn" class="secondary">GET /validate</button>
+          <button id="clearTokenBtn" class="ghost">Clear token</button>
+        </div>
+        <label class="token-field">
+          JWT token
+          <textarea id="token" rows="4" placeholder="Token will appear here after login"></textarea>
+        </label>
+      </article>
+
+      <article class="panel">
+        <div class="panel-heading">
+          <div>
+            <h2>Orders</h2>
+            <p>Create an order using the current JWT or list orders.</p>
+          </div>
+        </div>
+        <div class="form-grid two">
+          <label>
+            Item
+            <input id="orderItem" type="text" value="Cloud architecture lab" />
+          </label>
+          <label>
+            Total
+            <input id="orderTotal" type="number" min="0" step="0.01" value="99" />
+          </label>
+        </div>
+        <div class="actions">
+          <button id="createOrderBtn" class="primary">POST /orders</button>
+          <button id="listOrdersBtn" class="secondary">GET /orders</button>
+        </div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-heading">
+          <div>
+            <h2>Notifications</h2>
+            <p>Send a test notification or inspect stored notifications.</p>
+          </div>
+        </div>
+        <label>
+          Message
+          <input id="notificationMessage" type="text" value="Frontend test notification" />
+        </label>
+        <div class="actions">
+          <button id="sendNotificationBtn" class="primary">POST /notify</button>
+          <button id="listNotificationsBtn" class="secondary">GET /notifications</button>
+        </div>
+      </article>
+    </section>
+
+    <section class="panel response-panel">
+      <div class="panel-heading response-heading">
+        <div>
+          <h2>Last response</h2>
+          <p id="responseMeta">No request yet.</p>
+        </div>
+        <button id="clearResponseBtn" class="ghost">Clear</button>
+      </div>
+      <pre id="responseBody">Run a request to inspect its response here.</pre>
+    </section>
+
+    <section class="panel history-panel">
+      <div class="panel-heading">
+        <div>
+          <h2>Request history</h2>
+          <p>The last 12 requests are kept in this page only.</p>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Method</th><th>Path</th><th>Status</th><th>Time</th></tr>
+          </thead>
+          <tbody id="historyBody">
+            <tr><td colspan="4" class="empty-row">No requests yet.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
