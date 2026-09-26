@@ -1,3 +1,4 @@
+require('./tracing');
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const { connectRedis } = require('./redis');
