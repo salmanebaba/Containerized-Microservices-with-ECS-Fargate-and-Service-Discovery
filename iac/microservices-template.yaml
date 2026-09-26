@@ -1,0 +1,1376 @@
+---
+Metadata:
+  AWSToolsMetrics:
+    IaC_Generator: "arn:aws:cloudformation:eu-west-3:242218429123:generatedTemplate/1057b784-aa5c-4a3a-8eb8-e185b0030824"
+Resources:
+  EC2VPCGatewayAttachmentIGW:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::VPCGatewayAttachment"
+    DeletionPolicy: "Retain"
+    Properties:
+      InternetGatewayId: "igw-0e81a3c434dcdb880"
+      VpcId: "vpc-0512ff46539e96dea"
+  IAMRoleAWSServiceRoleForElasticLoadBalancing:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::IAM::Role"
+    DeletionPolicy: "Retain"
+    Properties:
+      Path: "/aws-service-role/elasticloadbalancing.amazonaws.com/"
+      ManagedPolicyArns:
+      - "arn:aws:iam::aws:policy/aws-service-role/AWSElasticLoadBalancingServiceRolePolicy"
+      MaxSessionDuration: 3600
+      RoleName: "AWSServiceRoleForElasticLoadBalancing"
+      Description: "Allows ELB to call AWS services on your behalf."
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Action: "sts:AssumeRole"
+          Effect: "Allow"
+          Principal:
+            Service: "elasticloadbalancing.amazonaws.com"
+  ElasticLoadBalancingV2LoadBalancerLoadbalancerappmicroservicesalbf0dae03968fc604f:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::ElasticLoadBalancingV2::LoadBalancer"
+    DeletionPolicy: "Retain"
+    Properties:
+      IpAddressType: "ipv4"
+      SecurityGroups:
+      - "sg-08b98efcbaaef93cd"
+      LoadBalancerAttributes:
+      - Value: ""
+        Key: "access_logs.s3.prefix"
+      - Value: "append"
+        Key: "routing.http.xff_header_processing.mode"
+      - Value: "true"
+        Key: "routing.http2.enabled"
+      - Value: "false"
+        Key: "waf.fail_open.enabled"
+      - Value: ""
+        Key: "connection_logs.s3.bucket"
+      - Value: "false"
+        Key: "access_logs.s3.enabled"
+      - Value: "false"
+        Key: "zonal_shift.config.enabled"
+      - Value: "defensive"
+        Key: "routing.http.desync_mitigation_mode"
+      - Value: ""
+        Key: "connection_logs.s3.prefix"
+      - Value: ""
+        Key: "health_check_logs.s3.prefix"
+      - Value: "false"
+        Key: "routing.http.x_amzn_tls_version_and_cipher_suite.enabled"
+      - Value: "false"
+        Key: "routing.http.preserve_host_header.enabled"
+      - Value: "true"
+        Key: "load_balancing.cross_zone.enabled"
+      - Value: "false"
+        Key: "health_check_logs.s3.enabled"
+      - Value: ""
+        Key: "health_check_logs.s3.bucket"
+      - Value: "false"
+        Key: "routing.http.xff_client_port.enabled"
+      - Value: ""
+        Key: "access_logs.s3.bucket"
+      - Value: "false"
+        Key: "deletion_protection.enabled"
+      - Value: "3600"
+        Key: "client_keep_alive.seconds"
+      - Value: "false"
+        Key: "routing.http.drop_invalid_header_fields.enabled"
+      - Value: "false"
+        Key: "connection_logs.s3.enabled"
+      - Value: "60"
+        Key: "idle_timeout.timeout_seconds"
+      Subnets:
+      - "subnet-0daec0cc392e39726"
+      - "subnet-0f9a29f8d71904ff7"
+      Type: "application"
+      Scheme: "internet-facing"
+      EnablePrefixForIpv6SourceNat: "off"
+      Tags: []
+      Name: "microservices-alb"
+      SubnetMappings:
+      - SubnetId: "subnet-0f9a29f8d71904ff7"
+      - SubnetId: "subnet-0daec0cc392e39726"
+  EC2SubnetNetworkAclAssociationHQ:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::SubnetNetworkAclAssociation"
+    DeletionPolicy: "Retain"
+    Properties:
+      NetworkAclId: "acl-0ae9f2ae8eb463aad"
+      SubnetId: "subnet-0955a5ab114c13750"
+  ElasticLoadBalancingV2TargetGroupTargetgroupmicroservicesordertg3082185aa87481c2:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::ElasticLoadBalancingV2::TargetGroup"
+    DeletionPolicy: "Retain"
+    Properties:
+      IpAddressType: "ipv4"
+      HealthCheckIntervalSeconds: 30
+      Matcher:
+        HttpCode: "200"
+      HealthCheckPath: "/api/order/health"
+      Port: 4002
+      Targets:
+      - AvailabilityZone: "eu-west-3b"
+        Port: 4002
+        Id: "10.0.12.88"
+      HealthCheckEnabled: true
+      ProtocolVersion: "HTTP1"
+      UnhealthyThresholdCount: 2
+      HealthCheckTimeoutSeconds: 5
+      Name: "microservices-order-tg"
+      VpcId: "vpc-0512ff46539e96dea"
+      HealthyThresholdCount: 5
+      HealthCheckProtocol: "HTTP"
+      TargetGroupAttributes:
+      - Value: "lb_cookie"
+        Key: "stickiness.type"
+      - Value: "86400"
+        Key: "stickiness.app_cookie.duration_seconds"
+      - Value: "1"
+        Key: "target_group_health.dns_failover.minimum_healthy_targets.count"
+      - Value: "use_load_balancer_configuration"
+        Key: "load_balancing.cross_zone.enabled"
+      - Value: "86400"
+        Key: "stickiness.lb_cookie.duration_seconds"
+      - Value: "off"
+        Key: "target_group_health.dns_failover.minimum_healthy_targets.percentage"
+      - Value: "false"
+        Key: "stickiness.enabled"
+      - Value: "off"
+        Key: "target_group_health.unhealthy_state_routing.minimum_healthy_targets.percentage"
+      - Value: "0"
+        Key: "slow_start.duration_seconds"
+      - Value: "300"
+        Key: "deregistration_delay.timeout_seconds"
+      - Value: "1"
+        Key: "target_group_health.unhealthy_state_routing.minimum_healthy_targets.count"
+      - Value: "off"
+        Key: "load_balancing.algorithm.anomaly_mitigation"
+      - Value: ""
+        Key: "stickiness.app_cookie.cookie_name"
+      - Value: "round_robin"
+        Key: "load_balancing.algorithm.type"
+      TargetType: "ip"
+      HealthCheckPort: "traffic-port"
+      Protocol: "HTTP"
+      Tags: []
+  EC2SubnetNetworkAclAssociation:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::SubnetNetworkAclAssociation"
+    DeletionPolicy: "Retain"
+    Properties:
+      NetworkAclId: "acl-0ae9f2ae8eb463aad"
+      SubnetId: "subnet-017be9cf35278e83a"
+  ElasticLoadBalancingV2ListenerListenerappmicroservicesalbf0dae03968fc604ff38ac4eeccfa7995:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::ElasticLoadBalancingV2::Listener"
+    DeletionPolicy: "Retain"
+    Properties:
+      ListenerAttributes:
+      - Value: "true"
+        Key: "routing.http.response.server.enabled"
+      - Value: ""
+        Key: "routing.http.response.access_control_allow_headers.header_value"
+      - Value: ""
+        Key: "routing.http.response.x_frame_options.header_value"
+      - Value: ""
+        Key: "routing.http.response.access_control_allow_methods.header_value"
+      - Value: ""
+        Key: "routing.http.response.access_control_allow_origin.header_value"
+      - Value: ""
+        Key: "routing.http.response.access_control_allow_credentials.header_value"
+      - Value: ""
+        Key: "routing.http.response.x_content_type_options.header_value"
+      - Value: ""
+        Key: "routing.http.response.content_security_policy.header_value"
+      - Value: ""
+        Key: "routing.http.response.access_control_expose_headers.header_value"
+      - Value: ""
+        Key: "routing.http.response.strict_transport_security.header_value"
+      - Value: ""
+        Key: "routing.http.response.access_control_max_age.header_value"
+      Protocol: "HTTP"
+      LoadBalancerArn: "arn:aws:elasticloadbalancing:eu-west-3:242218429123:loadbalancer/app/microservices-alb/f0dae03968fc604f"
+      DefaultActions:
+      - Order: 1
+        FixedResponseConfig:
+          ContentType: "text/plain"
+          StatusCode: "404"
+        Type: "fixed-response"
+      Port: 80
+  EC2NatGateway:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::NatGateway"
+    DeletionPolicy: "Retain"
+    Properties:
+      PrivateIpAddress: "10.0.1.236"
+      ConnectivityType: "public"
+      VpcId: "vpc-0512ff46539e96dea"
+      AvailabilityMode: "zonal"
+      AllocationId: "eipalloc-04c6a188f31b0eddc"
+      SubnetId: "subnet-0daec0cc392e39726"
+      Tags:
+      - Value: "microservices-nat"
+        Key: "Name"
+  IAMRoleCodebuildmicroservicesbuildservicerole:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::IAM::Role"
+    DeletionPolicy: "Retain"
+    Properties:
+      Path: "/service-role/"
+      ManagedPolicyArns:
+      - "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser"
+      - "arn:aws:iam::242218429123:policy/service-role/CodeBuildBasePolicy-microservices-build-eu-west-3"
+      MaxSessionDuration: 3600
+      RoleName: "codebuild-microservices-build-service-role"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Action: "sts:AssumeRole"
+          Effect: "Allow"
+          Principal:
+            Service: "codebuild.amazonaws.com"
+  EC2SubnetW3:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::Subnet"
+    DeletionPolicy: "Retain"
+    Properties:
+      MapPublicIpOnLaunch: false
+      EnableDns64: false
+      VpcId: "vpc-0512ff46539e96dea"
+      AvailabilityZoneId: "euw3-az2"
+      PrivateDnsNameOptionsOnLaunch:
+        EnableResourceNameDnsARecord: false
+        HostnameType: "ip-name"
+        EnableResourceNameDnsAAAARecord: false
+      AvailabilityZone: "eu-west-3b"
+      CidrBlock: "10.0.2.0/24"
+      Ipv6Native: false
+      Tags:
+      - Value: "microservices-public-b"
+        Key: "Name"
+  IAMRoleAWSServiceRoleForElastiCache:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::IAM::Role"
+    DeletionPolicy: "Retain"
+    Properties:
+      Path: "/aws-service-role/elasticache.amazonaws.com/"
+      ManagedPolicyArns:
+      - "arn:aws:iam::aws:policy/aws-service-role/ElastiCacheServiceRolePolicy"
+      MaxSessionDuration: 3600
+      RoleName: "AWSServiceRoleForElastiCache"
+      Description: "This policy allows ElastiCache to manage AWS resources on your\
+        \ behalf as necessary for managing your cache."
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Action: "sts:AssumeRole"
+          Effect: "Allow"
+          Principal:
+            Service: "elasticache.amazonaws.com"
+  S3BucketCodepipelineeuwest3d82e9750dad847d7ad6cf0eb5eb96eff:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::S3::Bucket"
+    DeletionPolicy: "Retain"
+    Properties:
+      AbacStatus: "Disabled"
+      PublicAccessBlockConfiguration:
+        RestrictPublicBuckets: true
+        IgnorePublicAcls: true
+        BlockPublicPolicy: true
+        BlockPublicAcls: true
+      BucketName: "codepipeline-eu-west-3-d82e9750dad8-47d7-ad6c-f0eb5eb96eff"
+      OwnershipControls:
+        Rules:
+        - ObjectOwnership: "BucketOwnerEnforced"
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+        - BucketKeyEnabled: false
+          BlockedEncryptionTypes:
+            EncryptionType:
+            - "SSE-C"
+          ServerSideEncryptionByDefault:
+            SSEAlgorithm: "AES256"
+  ECRRepositoryContainerizedmicroservicesorder:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::ECR::Repository"
+    DeletionPolicy: "Retain"
+    Properties:
+      ImageScanningConfiguration:
+        ScanOnPush: false
+      RepositoryName: "containerized-microservices-order"
+      EncryptionConfiguration:
+        EncryptionType: "AES256"
+      Tags: []
+      ImageTagMutability: "MUTABLE"
+  IAMRoleEcsTaskExecutionRolemicroservices:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::IAM::Role"
+    DeletionPolicy: "Retain"
+    Properties:
+      Path: "/"
+      ManagedPolicyArns:
+      - "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+      MaxSessionDuration: 3600
+      RoleName: "ecsTaskExecutionRole-microservices"
+      Description: "Allows ECS tasks to call AWS services on your behalf."
+      Policies:
+      - PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+          - Resource: "arn:aws:secretsmanager:eu-west-3:242218429123:secret:microservices/auth/jwt-D8BMcH"
+            Action: "secretsmanager:GetsecretValue"
+            Effect: "Allow"
+        PolicyName: "microservices-auth-secret-acces"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Action: "sts:AssumeRole"
+          Effect: "Allow"
+          Principal:
+            Service: "ecs-tasks.amazonaws.com"
+          Sid: ""
+  IAMRoleAWSCodePipelineServiceRoleeuwest3microservicespipeline:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::IAM::Role"
+    DeletionPolicy: "Retain"
+    Properties:
+      Path: "/service-role/"
+      ManagedPolicyArns:
+      - "arn:aws:iam::242218429123:policy/service-role/CodePipeline-CodeBuild-eu-west-3-microservices-pipeline"
+      - "arn:aws:iam::242218429123:policy/service-role/CodePipeline-CodeConnections-eu-west-3-microservices-pipeline"
+      - "arn:aws:iam::242218429123:policy/service-role/AWSCodePipelineServiceRole-eu-west-3-microservices-pipeline"
+      MaxSessionDuration: 3600
+      RoleName: "AWSCodePipelineServiceRole-eu-west-3-microservices-pipeline"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Condition:
+            StringEquals:
+              aws:SourceAccount: "242218429123"
+          Action: "sts:AssumeRole"
+          Effect: "Allow"
+          Principal:
+            Service: "codepipeline.amazonaws.com"
+          Sid: "CodePipelineTrustPolicy"
+  ElasticLoadBalancingV2ListenerRuleListenerruleappmicroservicesalbf0dae03968fc604ff38ac4eeccfa79952468c0dc36631c8f:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::ElasticLoadBalancingV2::ListenerRule"
+    DeletionPolicy: "Retain"
+    Properties:
+      ListenerArn: "arn:aws:elasticloadbalancing:eu-west-3:242218429123:listener/app/microservices-alb/f0dae03968fc604f/f38ac4eeccfa7995"
+      Actions:
+      - Order: 1
+        TargetGroupArn: "arn:aws:elasticloadbalancing:eu-west-3:242218429123:targetgroup/microservices-notification-tg/c64e97ba89f6a2e3"
+        Type: "forward"
+        ForwardConfig:
+          TargetGroupStickinessConfig:
+            Enabled: false
+            DurationSeconds: 3600
+          TargetGroups:
+          - TargetGroupArn: "arn:aws:elasticloadbalancing:eu-west-3:242218429123:targetgroup/microservices-notification-tg/c64e97ba89f6a2e3"
+            Weight: 1
+      Priority: 20
+      Conditions:
+      - Values:
+        - "/api/notification/*"
+        Field: "path-pattern"
+        PathPatternConfig:
+          Values:
+          - "/api/notification/*"
+      Transforms: []
+  IAMManagedPolicyPolicyserviceroleCodeBuildBasePolicymicroservicesbuildeuwest3:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::IAM::ManagedPolicy"
+    DeletionPolicy: "Retain"
+    Properties:
+      ManagedPolicyName: "CodeBuildBasePolicy-microservices-build-eu-west-3"
+      Path: "/service-role/"
+      Description: "Policy used in trust relationship with CodeBuild"
+      Groups: []
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Resource:
+          - "arn:aws:logs:eu-west-3:242218429123:log-group:/aws/codebuild/microservices-build"
+          - "arn:aws:logs:eu-west-3:242218429123:log-group:/aws/codebuild/microservices-build:*"
+          Action:
+          - "logs:CreateLogGroup"
+          - "logs:CreateLogStream"
+          - "logs:PutLogEvents"
+          Effect: "Allow"
+        - Resource:
+          - "arn:aws:s3:::codepipeline-eu-west-3-*"
+          Action:
+          - "s3:PutObject"
+          - "s3:GetObject"
+          - "s3:GetObjectVersion"
+          - "s3:GetBucketAcl"
+          - "s3:GetBucketLocation"
+          Effect: "Allow"
+        - Resource:
+          - "arn:aws:codebuild:eu-west-3:242218429123:report-group/microservices-build-*"
+          Action:
+          - "codebuild:CreateReportGroup"
+          - "codebuild:CreateReport"
+          - "codebuild:UpdateReport"
+          - "codebuild:BatchPutTestCases"
+          - "codebuild:BatchPutCodeCoverages"
+          Effect: "Allow"
+      Roles:
+      - "codebuild-microservices-build-service-role"
+      Users: []
+  ECRRepositoryContainerizedmicroservicesnotification:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::ECR::Repository"
+    DeletionPolicy: "Retain"
+    Properties:
+      ImageScanningConfiguration:
+        ScanOnPush: false
+      RepositoryName: "containerized-microservices-notification"
+      EncryptionConfiguration:
+        EncryptionType: "AES256"
+      Tags: []
+      ImageTagMutability: "MUTABLE"
+  ElasticLoadBalancingV2ListenerRuleListenerruleappmicroservicesalbf0dae03968fc604ff38ac4eeccfa79951a1bcec272c23717:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::ElasticLoadBalancingV2::ListenerRule"
+    DeletionPolicy: "Retain"
+    Properties:
+      ListenerArn: "arn:aws:elasticloadbalancing:eu-west-3:242218429123:listener/app/microservices-alb/f0dae03968fc604f/f38ac4eeccfa7995"
+      Actions:
+      - Order: 1
+        TargetGroupArn: "arn:aws:elasticloadbalancing:eu-west-3:242218429123:targetgroup/microservices-auth-tg/5417ee19970a444f"
+        Type: "forward"
+        ForwardConfig:
+          TargetGroupStickinessConfig:
+            Enabled: false
+            DurationSeconds: 3600
+          TargetGroups:
+          - TargetGroupArn: "arn:aws:elasticloadbalancing:eu-west-3:242218429123:targetgroup/microservices-auth-tg/5417ee19970a444f"
+            Weight: 1
+      Priority: 10
+      Conditions:
+      - Values:
+        - "/api/auth/*"
+        Field: "path-pattern"
+        PathPatternConfig:
+          Values:
+          - "/api/auth/*"
+      Transforms: []
+  SecretsManagerSecret:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::SecretsManager::Secret"
+    DeletionPolicy: "Retain"
+    Properties:
+      ReplicaRegions: []
+      Tags: []
+      Name: "microservices/auth/jwt"
+  ECSTaskDefinitionTaskdefinitionmicroservicesnotification3:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::ECS::TaskDefinition"
+    DeletionPolicy: "Retain"
+    Properties:
+      TaskRoleArn: "arn:aws:iam::242218429123:role/escTaskRole-microservices"
+      InferenceAccelerators: []
+      Memory: "512"
+      PlacementConstraints: []
+      Cpu: "256"
+      RequiresCompatibilities:
+      - "FARGATE"
+      NetworkMode: "awsvpc"
+      EnableFaultInjection: false
+      ExecutionRoleArn: "arn:aws:iam::242218429123:role/ecsTaskExecutionRole-microservices"
+      RuntimePlatform:
+        OperatingSystemFamily: "LINUX"
+        CpuArchitecture: "X86_64"
+      Volumes: []
+      ContainerDefinitions:
+      - ExtraHosts: []
+        Secrets: []
+        VolumesFrom: []
+        Cpu: 0
+        EntryPoint: []
+        DnsServers: []
+        Image: "242218429123.dkr.ecr.eu-west-3.amazonaws.com/containerized-microservices-notification:7"
+        Essential: true
+        LogConfiguration:
+          SecretOptions: []
+          Options:
+            awslogs-group: "/ecs/microservices-notification"
+            awslogs-create-group: "true"
+            awslogs-region: "eu-west-3"
+            awslogs-stream-prefix: "ecs"
+          LogDriver: "awslogs"
+        ResourceRequirements: []
+        EnvironmentFiles: []
+        Name: "notification-service"
+        MountPoints: []
+        DependsOn: []
+        DockerLabels: {}
+        PortMappings:
+        - ContainerPort: 4003
+          AppProtocol: "http"
+          Protocol: "tcp"
+          HostPort: 4003
+          Name: "notification-service-4003-tcp"
+        DockerSecurityOptions: []
+        SystemControls: []
+        Command: []
+        DnsSearchDomains: []
+        Environment:
+        - Value: "4003"
+          Name: "PORT"
+        Links: []
+        CredentialSpecs: []
+        Ulimits: []
+      Family: "microservices-notification"
+      Tags: []
+  IAMRoleEscTaskRolemicroservices:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::IAM::Role"
+    DeletionPolicy: "Retain"
+    Properties:
+      Path: "/"
+      MaxSessionDuration: 3600
+      RoleName: "escTaskRole-microservices"
+      Description: "Allows ECS tasks to call AWS services on your behalf."
+      Policies:
+      - PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+          - Resource: "*"
+            Action:
+            - "xray:PutTraceSegments"
+            - "xray:PutTelemetryRecords"
+            - "xray:GetSamplingRules"
+            - "xray:GetSamplingTargets"
+            - "xray:GetSamplingStatisticSummaries"
+            Effect: "Allow"
+        PolicyName: "microservices-xray-access"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Action: "sts:AssumeRole"
+          Effect: "Allow"
+          Principal:
+            Service: "ecs-tasks.amazonaws.com"
+          Sid: ""
+  IAMManagedPolicyPolicyserviceroleAWSCodePipelineServiceRoleeuwest3microservicespipeline:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::IAM::ManagedPolicy"
+    DeletionPolicy: "Retain"
+    Properties:
+      ManagedPolicyName: "AWSCodePipelineServiceRole-eu-west-3-microservices-pipeline"
+      Path: "/service-role/"
+      Description: "Policy used in trust relationship with CodePipeline for service\
+        \ role"
+      Groups: []
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Condition:
+            StringEquals:
+              aws:ResourceAccount: "242218429123"
+          Resource:
+          - "arn:aws:s3:::codepipeline-eu-west-3-d82e9750dad8-47d7-ad6c-f0eb5eb96eff"
+          Action:
+          - "s3:GetBucketVersioning"
+          - "s3:GetBucketAcl"
+          - "s3:GetBucketLocation"
+          Effect: "Allow"
+          Sid: "AllowS3BucketAccess"
+        - Condition:
+            StringEquals:
+              aws:ResourceAccount: "242218429123"
+          Resource:
+          - "arn:aws:s3:::codepipeline-eu-west-3-d82e9750dad8-47d7-ad6c-f0eb5eb96eff/*"
+          Action:
+          - "s3:PutObject"
+          - "s3:PutObjectAcl"
+          - "s3:GetObject"
+          - "s3:GetObjectVersion"
+          Effect: "Allow"
+          Sid: "AllowS3ObjectAccess"
+      Roles:
+      - "AWSCodePipelineServiceRole-eu-west-3-microservices-pipeline"
+      Users: []
+  ElasticLoadBalancingV2ListenerRuleListenerruleappmicroservicesalbf0dae03968fc604ff38ac4eeccfa7995b5297503b0e0dc3e:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::ElasticLoadBalancingV2::ListenerRule"
+    DeletionPolicy: "Retain"
+    Properties:
+      ListenerArn: "arn:aws:elasticloadbalancing:eu-west-3:242218429123:listener/app/microservices-alb/f0dae03968fc604f/f38ac4eeccfa7995"
+      Actions:
+      - Order: 1
+        TargetGroupArn: "arn:aws:elasticloadbalancing:eu-west-3:242218429123:targetgroup/microservices-order-tg/3082185aa87481c2"
+        Type: "forward"
+        ForwardConfig:
+          TargetGroupStickinessConfig:
+            Enabled: false
+            DurationSeconds: 3600
+          TargetGroups:
+          - TargetGroupArn: "arn:aws:elasticloadbalancing:eu-west-3:242218429123:targetgroup/microservices-order-tg/3082185aa87481c2"
+            Weight: 1
+      Priority: 30
+      Conditions:
+      - Values:
+        - "/api/order/*"
+        Field: "path-pattern"
+        PathPatternConfig:
+          Values:
+          - "/api/order/*"
+      Transforms: []
+  EC2SubnetHz:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::Subnet"
+    DeletionPolicy: "Retain"
+    Properties:
+      MapPublicIpOnLaunch: false
+      EnableDns64: false
+      VpcId: "vpc-0512ff46539e96dea"
+      AvailabilityZoneId: "euw3-az1"
+      PrivateDnsNameOptionsOnLaunch:
+        EnableResourceNameDnsARecord: false
+        HostnameType: "ip-name"
+        EnableResourceNameDnsAAAARecord: false
+      AvailabilityZone: "eu-west-3a"
+      CidrBlock: "10.0.1.0/24"
+      Ipv6Native: false
+      Tags:
+      - Value: "microservices-public-a"
+        Key: "Name"
+  EC2VPCCidrBlock:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::VPCCidrBlock"
+    DeletionPolicy: "Retain"
+    Properties:
+      VpcId: "vpc-0512ff46539e96dea"
+      CidrBlock: "10.0.0.0/16"
+  ElasticLoadBalancingV2TargetGroupTargetgroupmicroservicesnotificationtgc64e97ba89f6a2e3:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::ElasticLoadBalancingV2::TargetGroup"
+    DeletionPolicy: "Retain"
+    Properties:
+      IpAddressType: "ipv4"
+      HealthCheckIntervalSeconds: 30
+      Matcher:
+        HttpCode: "200"
+      HealthCheckPath: "/api/notification/health"
+      Port: 4003
+      Targets:
+      - AvailabilityZone: "eu-west-3a"
+        Port: 4003
+        Id: "10.0.11.24"
+      HealthCheckEnabled: true
+      ProtocolVersion: "HTTP1"
+      UnhealthyThresholdCount: 2
+      HealthCheckTimeoutSeconds: 5
+      Name: "microservices-notification-tg"
+      VpcId: "vpc-0512ff46539e96dea"
+      HealthyThresholdCount: 5
+      HealthCheckProtocol: "HTTP"
+      TargetGroupAttributes:
+      - Value: "lb_cookie"
+        Key: "stickiness.type"
+      - Value: "86400"
+        Key: "stickiness.app_cookie.duration_seconds"
+      - Value: "1"
+        Key: "target_group_health.dns_failover.minimum_healthy_targets.count"
+      - Value: "use_load_balancer_configuration"
+        Key: "load_balancing.cross_zone.enabled"
+      - Value: "86400"
+        Key: "stickiness.lb_cookie.duration_seconds"
+      - Value: "off"
+        Key: "target_group_health.dns_failover.minimum_healthy_targets.percentage"
+      - Value: "false"
+        Key: "stickiness.enabled"
+      - Value: "off"
+        Key: "target_group_health.unhealthy_state_routing.minimum_healthy_targets.percentage"
+      - Value: "0"
+        Key: "slow_start.duration_seconds"
+      - Value: "300"
+        Key: "deregistration_delay.timeout_seconds"
+      - Value: "1"
+        Key: "target_group_health.unhealthy_state_routing.minimum_healthy_targets.count"
+      - Value: "off"
+        Key: "load_balancing.algorithm.anomaly_mitigation"
+      - Value: ""
+        Key: "stickiness.app_cookie.cookie_name"
+      - Value: "round_robin"
+        Key: "load_balancing.algorithm.type"
+      TargetType: "ip"
+      HealthCheckPort: "traffic-port"
+      Protocol: "HTTP"
+      Tags: []
+  EC2VPCDHCPOptionsAssociation:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::VPCDHCPOptionsAssociation"
+    DeletionPolicy: "Retain"
+    Properties:
+      VpcId: "vpc-0512ff46539e96dea"
+      DhcpOptionsId: "dopt-060f4abf8a34f2418"
+  EC2NetworkInterfaceGZ:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::NetworkInterface"
+    DeletionPolicy: "Retain"
+    Properties:
+      SourceDestCheck: true
+      Description: "arn:aws:ecs:eu-west-3:242218429123:attachment/221a13d8-6c83-48e2-9ce4-06b536e1ceb0"
+      PrivateIpAddresses:
+      - PrivateIpAddress: "10.0.11.24"
+        Primary: true
+      Ipv6PrefixCount: 0
+      Ipv4Prefixes: []
+      Ipv4PrefixCount: 0
+      GroupSet:
+      - "sg-07dc8325c04a62127"
+      Ipv6Prefixes: []
+      SubnetId: "subnet-017be9cf35278e83a"
+      Tags: []
+      ConnectionTrackingSpecification:
+        TcpEstablishedTimeout: 432000
+  EC2NetworkInterface:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::NetworkInterface"
+    DeletionPolicy: "Retain"
+    Properties:
+      SourceDestCheck: true
+      Description: "arn:aws:ecs:eu-west-3:242218429123:attachment/16157e97-b358-485c-b89d-4cafbfc171eb"
+      PrivateIpAddresses:
+      - PrivateIpAddress: "10.0.12.88"
+        Primary: true
+      Ipv6PrefixCount: 0
+      Ipv4Prefixes: []
+      Ipv4PrefixCount: 0
+      GroupSet:
+      - "sg-07dc8325c04a62127"
+      Ipv6Prefixes: []
+      SubnetId: "subnet-0955a5ab114c13750"
+      Tags: []
+      ConnectionTrackingSpecification:
+        TcpEstablishedTimeout: 432000
+  EC2InternetGateway:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::InternetGateway"
+    DeletionPolicy: "Retain"
+    Properties:
+      Tags:
+      - Value: "microservices-igw"
+        Key: "Name"
+  CodePipelinePipelineMicroservicespipeline:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::CodePipeline::Pipeline"
+    DeletionPolicy: "Retain"
+    Properties:
+      Variables: []
+      ArtifactStores: []
+      ArtifactStore:
+        Type: "S3"
+        Location: "codepipeline-eu-west-3-d82e9750dad8-47d7-ad6c-f0eb5eb96eff"
+      DisableInboundStageTransitions: []
+      Stages:
+      - Blockers: []
+        Actions:
+        - ActionTypeId:
+            Owner: "AWS"
+            Category: "Source"
+            Version: "1"
+            Provider: "CodeStarSourceConnection"
+          Configuration:
+            ConnectionArn: "arn:aws:codeconnections:eu-west-3:242218429123:connection/e8142c29-c9b2-46d3-b10e-d3f559c111cc"
+            DetectChanges: "true"
+            BranchName: "main"
+            FullRepositoryId: "salmanebaba/Containerized-Microservices-with-ECS-Fargate-and-Service-Discovery"
+            OutputArtifactFormat: "CODE_ZIP"
+          InputArtifacts: []
+          OutputArtifacts:
+          - Files: []
+            Name: "SourceArtifact"
+          Commands: []
+          OutputVariables: []
+          Region: "eu-west-3"
+          Namespace: "SourceVariables"
+          RunOrder: 1
+          Name: "Source"
+        Name: "Source"
+        OnFailure:
+          RetryConfiguration:
+            RetryMode: "ALL_ACTIONS"
+          Conditions: []
+          Result: "RETRY"
+      - Blockers: []
+        Actions:
+        - ActionTypeId:
+            Owner: "AWS"
+            Category: "Build"
+            Version: "1"
+            Provider: "CodeBuild"
+          Configuration:
+            ProjectName: "microservices-build"
+          InputArtifacts:
+          - Name: "SourceArtifact"
+          OutputArtifacts:
+          - Files: []
+            Name: "BuildArtifact"
+          Commands: []
+          OutputVariables: []
+          Region: "eu-west-3"
+          Namespace: "BuildVariables"
+          RunOrder: 1
+          Name: "Build"
+        Name: "Build"
+        OnFailure:
+          RetryConfiguration:
+            RetryMode: "ALL_ACTIONS"
+          Conditions: []
+          Result: "RETRY"
+      PipelineType: "V2"
+      ExecutionMode: "QUEUED"
+      Triggers:
+      - GitConfiguration:
+          Push:
+          - Branches:
+              Includes:
+              - "main"
+              Excludes: []
+          SourceActionName: "Source"
+          PullRequest: []
+        ProviderType: "CodeStarSourceConnection"
+      RoleArn: "arn:aws:iam::242218429123:role/service-role/AWSCodePipelineServiceRole-eu-west-3-microservices-pipeline"
+      Tags: []
+      Name: "microservices-pipeline"
+  EC2NetworkAcl:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::NetworkAcl"
+    DeletionPolicy: "Retain"
+    Properties:
+      VpcId: "vpc-0512ff46539e96dea"
+      Tags: []
+  EC2RouteTableMI:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::RouteTable"
+    DeletionPolicy: "Retain"
+    Properties:
+      VpcId: "vpc-0512ff46539e96dea"
+      Tags:
+      - Value: "microservices-private-rt"
+        Key: "Name"
+  EC2NetworkInterfaceFM:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::NetworkInterface"
+    DeletionPolicy: "Retain"
+    Properties:
+      SourceDestCheck: true
+      Description: "arn:aws:ecs:eu-west-3:242218429123:attachment/673e258c-ff88-4937-85d3-9e9c7cce9454"
+      PrivateIpAddresses:
+      - PrivateIpAddress: "10.0.12.100"
+        Primary: true
+      Ipv6PrefixCount: 0
+      Ipv4Prefixes: []
+      Ipv4PrefixCount: 0
+      GroupSet:
+      - "sg-07dc8325c04a62127"
+      Ipv6Prefixes: []
+      SubnetId: "subnet-0955a5ab114c13750"
+      Tags: []
+      ConnectionTrackingSpecification:
+        TcpEstablishedTimeout: 432000
+  ECSTaskDefinitionTaskdefinitionmicroservicesorder5:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::ECS::TaskDefinition"
+    DeletionPolicy: "Retain"
+    Properties:
+      TaskRoleArn: "arn:aws:iam::242218429123:role/escTaskRole-microservices"
+      InferenceAccelerators: []
+      Memory: "512"
+      PlacementConstraints: []
+      Cpu: "256"
+      RequiresCompatibilities:
+      - "FARGATE"
+      NetworkMode: "awsvpc"
+      EnableFaultInjection: false
+      ExecutionRoleArn: "arn:aws:iam::242218429123:role/ecsTaskExecutionRole-microservices"
+      RuntimePlatform:
+        OperatingSystemFamily: "LINUX"
+        CpuArchitecture: "X86_64"
+      Volumes: []
+      ContainerDefinitions:
+      - ExtraHosts: []
+        Secrets: []
+        VolumesFrom: []
+        Cpu: 0
+        EntryPoint: []
+        DnsServers: []
+        Image: "242218429123.dkr.ecr.eu-west-3.amazonaws.com/containerized-microservices-order:7"
+        Essential: true
+        LogConfiguration:
+          SecretOptions: []
+          Options:
+            awslogs-group: "/ecs/microservices-order"
+            awslogs-create-group: "true"
+            awslogs-region: "eu-west-3"
+            awslogs-stream-prefix: "ecs"
+          LogDriver: "awslogs"
+        ResourceRequirements: []
+        EnvironmentFiles: []
+        Name: "order-service"
+        MountPoints: []
+        DependsOn: []
+        DockerLabels: {}
+        PortMappings:
+        - ContainerPort: 4002
+          AppProtocol: "http"
+          Protocol: "tcp"
+          HostPort: 4002
+          Name: "port"
+        DockerSecurityOptions: []
+        SystemControls: []
+        Command: []
+        DnsSearchDomains: []
+        Environment:
+        - Value: "http://notification-service.microservices.local:4003"
+          Name: "NOTIFICATION_SERVICE_URL"
+        - Value: "4002"
+          Name: "PORT"
+        - Value: "http://auth-service.microservices.local:4001"
+          Name: "AUTH_SERVICE_URL"
+        Links: []
+        CredentialSpecs: []
+        Ulimits: []
+      Family: "microservices-order"
+      Tags: []
+  ECSClusterMicroservicescluster:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::ECS::Cluster"
+    DeletionPolicy: "Retain"
+    Properties:
+      CapacityProviders:
+      - "FARGATE"
+      - "FARGATE_SPOT"
+      ClusterName: "microservices-cluster"
+      ClusterSettings:
+      - Value: "disabled"
+        Name: "containerInsights"
+      DefaultCapacityProviderStrategy: []
+      Configuration:
+        ExecuteCommandConfiguration:
+          Logging: "DEFAULT"
+      Tags: []
+  ECRRepositoryContainerizedmicroservicesauth:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::ECR::Repository"
+    DeletionPolicy: "Retain"
+    Properties:
+      ImageScanningConfiguration:
+        ScanOnPush: false
+      RepositoryName: "containerized-microservices-auth"
+      EncryptionConfiguration:
+        EncryptionType: "AES256"
+      Tags: []
+      ImageTagMutability: "MUTABLE"
+  EC2Subnet:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::Subnet"
+    DeletionPolicy: "Retain"
+    Properties:
+      MapPublicIpOnLaunch: false
+      EnableDns64: false
+      VpcId: "vpc-0512ff46539e96dea"
+      AvailabilityZoneId: "euw3-az1"
+      PrivateDnsNameOptionsOnLaunch:
+        EnableResourceNameDnsARecord: false
+        HostnameType: "ip-name"
+        EnableResourceNameDnsAAAARecord: false
+      AvailabilityZone: "eu-west-3a"
+      CidrBlock: "10.0.11.0/24"
+      Ipv6Native: false
+      Tags:
+      - Value: "microservices-private-a"
+        Key: "Name"
+  IAMManagedPolicyPolicyserviceroleCodePipelineCodeBuildeuwest3microservicespipeline:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::IAM::ManagedPolicy"
+    DeletionPolicy: "Retain"
+    Properties:
+      ManagedPolicyName: "CodePipeline-CodeBuild-eu-west-3-microservices-pipeline"
+      Path: "/service-role/"
+      Description: "Policy used in trust relationship with CodePipeline for CodeBuild\
+        \ Action"
+      Groups: []
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Resource:
+          - "arn:aws:codebuild:*:242218429123:project/microservices-build"
+          Action:
+          - "codebuild:BatchGetBuilds"
+          - "codebuild:StartBuild"
+          - "codebuild:BatchGetBuildBatches"
+          - "codebuild:StartBuildBatch"
+          Effect: "Allow"
+      Roles:
+      - "AWSCodePipelineServiceRole-eu-west-3-microservices-pipeline"
+      Users: []
+  EC2SecurityGroup:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::SecurityGroup"
+    DeletionPolicy: "Retain"
+    Properties:
+      GroupDescription: "SG for microservices ALB"
+      GroupName: "microservices-alb-sg"
+      VpcId: "vpc-0512ff46539e96dea"
+      SecurityGroupIngress:
+      - CidrIp: "0.0.0.0/0"
+        IpProtocol: "tcp"
+        FromPort: 80
+        ToPort: 80
+      SecurityGroupEgress:
+      - CidrIp: "0.0.0.0/0"
+        IpProtocol: "-1"
+  IAMRoleAWSServiceRoleForResourceExplorer:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::IAM::Role"
+    DeletionPolicy: "Retain"
+    Properties:
+      Path: "/aws-service-role/resource-explorer-2.amazonaws.com/"
+      ManagedPolicyArns:
+      - "arn:aws:iam::aws:policy/aws-service-role/AWSResourceExplorerServiceRolePolicy"
+      MaxSessionDuration: 3600
+      RoleName: "AWSServiceRoleForResourceExplorer"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Action: "sts:AssumeRole"
+          Effect: "Allow"
+          Principal:
+            Service: "resource-explorer-2.amazonaws.com"
+  IAMRoleAWSServiceRoleForECS:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::IAM::Role"
+    DeletionPolicy: "Retain"
+    Properties:
+      Path: "/aws-service-role/ecs.amazonaws.com/"
+      ManagedPolicyArns:
+      - "arn:aws:iam::aws:policy/aws-service-role/AmazonECSServiceRolePolicy"
+      MaxSessionDuration: 3600
+      RoleName: "AWSServiceRoleForECS"
+      Description: "Policy to enable Amazon ECS to manage your EC2 instances and related\
+        \ resources."
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Action: "sts:AssumeRole"
+          Effect: "Allow"
+          Principal:
+            Service: "ecs.amazonaws.com"
+  ECSCapacityProviderFARGATESPOT:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::ECS::CapacityProvider"
+    DeletionPolicy: "Retain"
+    Properties:
+      Tags: []
+      Name: "FARGATE_SPOT"
+  EC2SubnetNetworkAclAssociationFA:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::SubnetNetworkAclAssociation"
+    DeletionPolicy: "Retain"
+    Properties:
+      NetworkAclId: "acl-0ae9f2ae8eb463aad"
+      SubnetId: "subnet-0daec0cc392e39726"
+  ElastiCacheSubnetGroupMicroservicesredissubnetgroup:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::ElastiCache::SubnetGroup"
+    DeletionPolicy: "Retain"
+    Properties:
+      SubnetIds:
+      - "subnet-0955a5ab114c13750"
+      - "subnet-017be9cf35278e83a"
+      CacheSubnetGroupName: "microservices-redis-subnet-group"
+      Description: "privat subnet for redis"
+  ECSClusterCapacityProviderAssociationsMicroservicescluster:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::ECS::ClusterCapacityProviderAssociations"
+    DeletionPolicy: "Retain"
+    Properties:
+      CapacityProviders:
+      - "FARGATE"
+      - "FARGATE_SPOT"
+      Cluster: "microservices-cluster"
+      DefaultCapacityProviderStrategy: []
+  ElasticLoadBalancingV2TargetGroupTargetgroupmicroservicesauthtg5417ee19970a444f:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::ElasticLoadBalancingV2::TargetGroup"
+    DeletionPolicy: "Retain"
+    Properties:
+      IpAddressType: "ipv4"
+      HealthCheckIntervalSeconds: 30
+      Matcher:
+        HttpCode: "200"
+      HealthCheckPath: "/api/auth/health"
+      Port: 4001
+      Targets:
+      - AvailabilityZone: "eu-west-3b"
+        Port: 4001
+        Id: "10.0.12.100"
+      HealthCheckEnabled: true
+      ProtocolVersion: "HTTP1"
+      UnhealthyThresholdCount: 2
+      HealthCheckTimeoutSeconds: 5
+      Name: "microservices-auth-tg"
+      VpcId: "vpc-0512ff46539e96dea"
+      HealthyThresholdCount: 5
+      HealthCheckProtocol: "HTTP"
+      TargetGroupAttributes:
+      - Value: "lb_cookie"
+        Key: "stickiness.type"
+      - Value: "86400"
+        Key: "stickiness.app_cookie.duration_seconds"
+      - Value: "1"
+        Key: "target_group_health.dns_failover.minimum_healthy_targets.count"
+      - Value: "use_load_balancer_configuration"
+        Key: "load_balancing.cross_zone.enabled"
+      - Value: "86400"
+        Key: "stickiness.lb_cookie.duration_seconds"
+      - Value: "off"
+        Key: "target_group_health.dns_failover.minimum_healthy_targets.percentage"
+      - Value: "false"
+        Key: "stickiness.enabled"
+      - Value: "off"
+        Key: "target_group_health.unhealthy_state_routing.minimum_healthy_targets.percentage"
+      - Value: "0"
+        Key: "slow_start.duration_seconds"
+      - Value: "300"
+        Key: "deregistration_delay.timeout_seconds"
+      - Value: "1"
+        Key: "target_group_health.unhealthy_state_routing.minimum_healthy_targets.count"
+      - Value: "off"
+        Key: "load_balancing.algorithm.anomaly_mitigation"
+      - Value: ""
+        Key: "stickiness.app_cookie.cookie_name"
+      - Value: "round_robin"
+        Key: "load_balancing.algorithm.type"
+      TargetType: "ip"
+      HealthCheckPort: "traffic-port"
+      Protocol: "HTTP"
+      Tags: []
+  EC2SecurityGroupEgress:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::SecurityGroupEgress"
+    DeletionPolicy: "Retain"
+    Properties:
+      CidrIp: "0.0.0.0/0"
+      IpProtocol: "-1"
+      FromPort: -1
+      ToPort: -1
+      GroupId: "sg-0fd98721fb06e3f36"
+  EC2SubnetNetworkAclAssociationRn:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::SubnetNetworkAclAssociation"
+    DeletionPolicy: "Retain"
+    Properties:
+      NetworkAclId: "acl-0ae9f2ae8eb463aad"
+      SubnetId: "subnet-0f9a29f8d71904ff7"
+  ECSCapacityProviderFARGATE:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::ECS::CapacityProvider"
+    DeletionPolicy: "Retain"
+    Properties:
+      Tags: []
+      Name: "FARGATE"
+  EC2SubnetI5:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::Subnet"
+    DeletionPolicy: "Retain"
+    Properties:
+      MapPublicIpOnLaunch: false
+      EnableDns64: false
+      VpcId: "vpc-0512ff46539e96dea"
+      AvailabilityZoneId: "euw3-az2"
+      PrivateDnsNameOptionsOnLaunch:
+        EnableResourceNameDnsARecord: false
+        HostnameType: "ip-name"
+        EnableResourceNameDnsAAAARecord: false
+      AvailabilityZone: "eu-west-3b"
+      CidrBlock: "10.0.12.0/24"
+      Ipv6Native: false
+      Tags:
+      - Value: "microservices-private-b"
+        Key: "Name"
+  IAMManagedPolicyPolicyserviceroleCodePipelineCodeConnectionseuwest3microservicespipeline:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::IAM::ManagedPolicy"
+    DeletionPolicy: "Retain"
+    Properties:
+      ManagedPolicyName: "CodePipeline-CodeConnections-eu-west-3-microservices-pipeline"
+      Path: "/service-role/"
+      Description: "Policy used in trust relationship with CodePipeline for CodeConnections\
+        \ Action"
+      Groups: []
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Resource:
+          - "arn:aws:codestar-connections:*:242218429123:connection/e8142c29-c9b2-46d3-b10e-d3f559c111cc"
+          - "arn:aws:codeconnections:*:242218429123:connection/e8142c29-c9b2-46d3-b10e-d3f559c111cc"
+          Action:
+          - "codeconnections:UseConnection"
+          - "codestar-connections:UseConnection"
+          Effect: "Allow"
+      Roles:
+      - "AWSCodePipelineServiceRole-eu-west-3-microservices-pipeline"
+      Users: []
+  EC2VPC:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::VPC"
+    DeletionPolicy: "Retain"
+    Properties:
+      CidrBlock: "10.0.0.0/16"
+      EnableDnsSupport: true
+      InstanceTenancy: "default"
+      EnableDnsHostnames: false
+      Tags:
+      - Value: "microservices-vpc"
+        Key: "Name"
+  EC2RouteTable:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::RouteTable"
+    DeletionPolicy: "Retain"
+    Properties:
+      VpcId: "vpc-0512ff46539e96dea"
+      Tags:
+      - Value: "microservices-public-rt"
+        Key: "Name"
+  ECSTaskDefinitionTaskdefinitionmicroservicesauth10:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::ECS::TaskDefinition"
+    DeletionPolicy: "Retain"
+    Properties:
+      TaskRoleArn: "arn:aws:iam::242218429123:role/escTaskRole-microservices"
+      InferenceAccelerators: []
+      Memory: "1024"
+      PlacementConstraints: []
+      Cpu: "256"
+      RequiresCompatibilities:
+      - "FARGATE"
+      NetworkMode: "awsvpc"
+      EnableFaultInjection: false
+      ExecutionRoleArn: "arn:aws:iam::242218429123:role/ecsTaskExecutionRole-microservices"
+      RuntimePlatform:
+        OperatingSystemFamily: "LINUX"
+        CpuArchitecture: "X86_64"
+      Volumes: []
+      ContainerDefinitions:
+      - ExtraHosts: []
+        Secrets: []
+        VolumesFrom: []
+        Cpu: 0
+        EntryPoint: []
+        DnsServers: []
+        Image: "242218429123.dkr.ecr.eu-west-3.amazonaws.com/containerized-microservices-auth:8"
+        Essential: true
+        LogConfiguration:
+          SecretOptions: []
+          Options:
+            awslogs-group: "/ecs/microservices-auth"
+            awslogs-create-group: "true"
+            awslogs-region: "eu-west-3"
+            awslogs-stream-prefix: "ecs"
+          LogDriver: "awslogs"
+        ResourceRequirements: []
+        EnvironmentFiles: []
+        Name: "auth-service"
+        MountPoints: []
+        DependsOn: []
+        DockerLabels: {}
+        PortMappings:
+        - ContainerPort: 4001
+          AppProtocol: "http"
+          Protocol: "tcp"
+          HostPort: 4001
+          Name: "port"
+        DockerSecurityOptions: []
+        SystemControls: []
+        Command: []
+        DnsSearchDomains: []
+        Environment:
+        - Value: "auth-service"
+          Name: "OTEL_SERVICE_NAME"
+        - Value: "4001"
+          Name: "PORT"
+        - Value: "rediss://master.microservices-redis.jn1x1m.euw3.cache.amazonaws.com:6379"
+          Name: "REDIS_URL"
+        - Value: "http://localhost:4318/v1/traces"
+          Name: "OTEL_EXPORTER_OTLP_TRACES_ENDPOINT"
+        - Value: "arn:aws:secretsmanager:eu-west-3:242218429123:secret:microservices/auth/jwt-D8BMcH:JWT_SECRET::l"
+          Name: "JWT_SECRET"
+        Links: []
+        CredentialSpecs: []
+        Ulimits: []
+      - ExtraHosts: []
+        Secrets: []
+        VolumesFrom: []
+        Cpu: 0
+        EntryPoint: []
+        DnsServers: []
+        Image: "public.ecr.aws/aws-observability/aws-otel-collector:latest"
+        Essential: false
+        LogConfiguration:
+          SecretOptions: []
+          Options:
+            awslogs-group: "/ecs/microservices-auth"
+            awslogs-create-group: "true"
+            awslogs-region: "eu-west-3"
+            awslogs-stream-prefix: "ecs"
+          LogDriver: "awslogs"
+        ResourceRequirements: []
+        EnvironmentFiles: []
+        Name: "aws-otel-collector"
+        MountPoints: []
+        DependsOn:
+        - Condition: "START"
+          ContainerName: "auth-service"
+        DockerLabels: {}
+        PortMappings:
+        - ContainerPort: 4318
+          Protocol: "tcp"
+          HostPort: 4318
+          Name: "otel-collector-port"
+        DockerSecurityOptions: []
+        SystemControls: []
+        Command:
+        - "--config=/etc/ecs/ecs-default-config.yaml"
+        DnsSearchDomains: []
+        Environment: []
+        Links: []
+        CredentialSpecs: []
+        Ulimits: []
+      Family: "microservices-auth"
+      Tags: []
+  S3BucketPolicyCodepipelineeuwest3d82e9750dad847d7ad6cf0eb5eb96eff:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::S3::BucketPolicy"
+    DeletionPolicy: "Retain"
+    Properties:
+      Bucket: "codepipeline-eu-west-3-d82e9750dad8-47d7-ad6c-f0eb5eb96eff"
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Condition:
+            StringNotEquals:
+              s3:x-amz-server-side-encryption: "aws:kms"
+          Resource: "arn:aws:s3:::codepipeline-eu-west-3-d82e9750dad8-47d7-ad6c-f0eb5eb96eff/*"
+          Action: "s3:PutObject"
+          Effect: "Deny"
+          Principal: "*"
+          Sid: "DenyUnEncryptedObjectUploads"
+        - Condition:
+            Bool:
+              aws:SecureTransport: "false"
+          Resource: "arn:aws:s3:::codepipeline-eu-west-3-d82e9750dad8-47d7-ad6c-f0eb5eb96eff/*"
+          Action: "s3:*"
+          Effect: "Deny"
+          Principal: "*"
+          Sid: "DenyInsecureConnections"
+        Id: "SSEAndSSLPolicy"

@@ -10,6 +10,27 @@ The application is split into three Node.js microservices:
 
 The services run on **Amazon ECS Fargate** inside private subnets and are exposed through an **Application Load Balancer**.
 
+
+## Full Project Report
+
+A detailed technical report is available in [`report.pdf`](report.pdf).
+
+The report documents the complete implementation and the main design decisions, including:
+
+- application decomposition and local Docker Compose testing;
+- VPC design with public/private subnets across two Availability Zones;
+- ECS Fargate task definitions and services;
+- Application Load Balancer path-based routing and health checks;
+- AWS Cloud Map service discovery;
+- Secrets Manager and ElastiCache Redis integration;
+- CodePipeline, CodeBuild, ECR, and S3 artifacts;
+- API validation through `curl` and the test frontend;
+- OpenTelemetry, ADOT Collector, CloudWatch, and AWS X-Ray tracing;
+- the first Infrastructure as Code export using CloudFormation IaC Generator;
+- encountered issues, technical decisions, limitations, and future improvements.
+
+> For the complete architecture explanation, screenshots, configuration choices, and validation results, see **[`report.pdf`](report.pdf)**.
+
 ## Architecture
 
 ![AWS Architecture](images/architecture.png)
@@ -61,15 +82,27 @@ notification-service.microservices.local:4003
 .
 ├── auth-service/
 │   ├── Dockerfile
+│   ├── tracing.js
 │   └── ...
 ├── order-service/
 │   ├── Dockerfile
+│   ├── tracing.js
 │   └── ...
 ├── notification-service/
 │   ├── Dockerfile
+│   ├── tracing.js
 │   └── ...
+├── frontend/
+│   └── ...
+├── iac/
+│   └── microservices-template.yaml
+├── images/
+│   ├── architecture.png
+│   └── frontend_test.png
 ├── docker-compose.yml
-└── buildspec.yml
+├── buildspec.yml
+├── report.pdf
+└── README.md
 ```
 
 ## Run the Microservices Locally
@@ -266,6 +299,100 @@ containerized-microservices-notifications:12
 ```
 
 This makes image versions easier to track and roll back.
+
+
+## Observability with OpenTelemetry and AWS X-Ray
+
+The services are instrumented with **OpenTelemetry** and export traces through an **AWS Distro for OpenTelemetry (ADOT) Collector** sidecar running in the same ECS task.
+
+Example application configuration:
+
+```text
+OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://localhost:4318/v1/traces
+OTEL_SERVICE_NAME=auth-service
+```
+
+The ADOT Collector listens on OTLP/HTTP port `4318` and forwards traces to AWS X-Ray.
+
+```text
+Application container
+       |
+       | OTLP/HTTP :4318
+       v
+ADOT Collector sidecar
+       |
+       v
+AWS X-Ray / CloudWatch Trace Map
+```
+
+This makes it possible to visualize request paths, service dependencies, Redis/DNS operations, latency, and errors across the microservices architecture.
+
+## Infrastructure as Code
+
+An initial **CloudFormation** template was generated from the deployed AWS environment using **CloudFormation IaC Generator**.
+
+The generated template is stored under:
+
+```text
+iac/microservices-template.yaml
+```
+
+It captures a large part of the deployed infrastructure, including VPC networking, the ALB and target groups, ECS task definitions, ECR repositories, IAM roles, Secrets Manager, the pipeline artifact bucket, and other resources.
+
+### Validate the template
+
+```bash
+aws cloudformation validate-template \
+  --template-body file://iac/microservices-template.yaml
+```
+
+### Important note
+
+The IaC Generator output is a snapshot of the existing environment, not yet a fully cleaned reusable template. Some generated resources are runtime-specific and should not be kept in a final production template, for example:
+
+- ECS task ENIs;
+- hardcoded Fargate task private IP addresses in target groups;
+- fixed resource IDs and ARNs;
+- verbose generated defaults.
+
+The next IaC iteration will replace these values with CloudFormation references such as `!Ref` and `!GetAtt`, remove ephemeral resources, and add any missing resources required for a full deployment from scratch.
+
+Example of the desired cleaned style:
+
+```yaml
+Resources:
+  MicroservicesVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: microservices-vpc
+
+  ECSCluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: microservices-cluster
+
+  AuthRepository:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: containerized-microservices-auth
+
+  OrderRepository:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: containerized-microservices-order
+
+  NotificationRepository:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: containerized-microservices-notification
+```
+
+The full generated template and the cleanup rationale are also discussed in [`report.pdf`](report.pdf).
 
 ## Networking
 
